@@ -7,6 +7,8 @@
 #include <wchar.h>
 #include <fstream>
 #include <stdlib.h>
+#include <locale.h>
+
 using  namespace std;
 
 struct tienda 
@@ -16,8 +18,9 @@ struct tienda
     float coniva, imp, precio;
 };
 bool Repetido(int nump, int i);
+bool fecha(int fe);
 //bool Buscar(string tubatu, int i);
-int contador, alta;
+int w=0, b=0, alta;
 
 tienda* Pro; 
 void Alta();
@@ -28,41 +31,70 @@ void archivos();
 
 int main()
 {
-    system("COLOR 1F");
+    system("COLOR 0b");
+    setlocale(LC_ALL, "");
     int opcion;
-        printf(" \n\t * * * %cRITH GAMES Systems * * * \n",146);
-        printf(" \n\t * * * MENU DE OPCIONES * * * \n");
-        printf("1.-Alta de articulos \n");
-        printf("2.-Modificacion de articulos \n");
-        printf("3.-Baja de articulos \n");
-        printf("4.-Lista de articulos \n");
+    if (b == 0) {
+        printf(" \n\t * * * ÆRITH GAMING Systems * * * \n");
+        printf("\t     |Tienda de videojuegos|  \n");
+    }
+        printf(" \n\t * * * MENÚ DE OPCIONES * * * \n");
+        printf("1.-Alta de artículos \n");
+        printf("2.-Modificación de artículos \n");
+        printf("3.-Baja de artículos \n");
+        printf("4.-Lista de artículos \n");
         printf("5.-Limpiar pantalla \n");
         printf("6.-Salir \n");
+        printf("\nIngrese el número de la acción a realizar\n");
         scanf_s("%d", &opcion);
 
         switch (opcion)
         {
         case 1: //ALTA
+            b = 1;
             Alta();
             return main();
             break;
         case 2://MODIFICACION
-            modificar();
+            if (w == 1) 
+            {
+                b = 1;
+                modificar();
+            }
+            else {
+                printf("\nAún no se realizan registros\n");
+            }
+            b = 1;
             return main();
             break;
 
         case 3://BAJA
-            eliminar();
+            if (w == 1)
+            {
+                b = 1;
+                eliminar();
+            }
+            else {
+                printf("\nAún no se realizan registros\n");
+            }
             return main();
             break;
 
         case 4://LISTA
-            listas();
+            if (w == 1)
+            {
+                b = 1;
+                listas();
+            }
+            else {
+                printf("\nAún no se realizan registros\n");
+            }
             return main();
             break;
 
         case 5://LIMPIAR
             system("cls");
+            b = 0;
             return main();
             break;
         case 6://SALIR
@@ -70,7 +102,7 @@ int main()
             exit(1);
             break;
         default:
-            printf("Opcion invalida \n");
+            printf("Opción inválida \n");
             return main();
             break;
         }
@@ -78,43 +110,57 @@ int main()
 
 void Alta()
 {
-    printf("%cCuantos registros desea dar de alta? \n", 168);
+    printf("\n¿Cuántos registros desea dar de alta? \n");
     scanf_s("%d", &alta);
+    while (alta <= 0) {
+        printf("\nNúmero inválido\n");
+        printf("\n¿Cuántos registros desea dar de alta? \n");
+        scanf_s("%d", &alta);
+    }
     Pro = new tienda[alta]; // uso de new para hacer el arreglo dinamico
     for (int i = 0; i < alta; i++)
     {
-        int nump;
+        int nump, fe;
+        printf("\nREGISTRO #%d\n", i + 1);
         cin.ignore();//Necesario para el uso de string.
-        printf("\nIngrese el numero de item \n");
+        printf("\nIngrese el número de item \n");
         scanf_s("%d", &nump);
         while (Repetido(nump, i)) {
-            printf("El numero esta repetido\n");
-            printf("\nIngrese el numero de item \n");
+            printf("El número esta repetido\n");
+            printf("\nIngrese el número de ítem \n");
             scanf_s("%d", &nump);
         }
         Pro[i].numero = nump;
         cin.ignore();//Necesario para el uso de string.
-        printf("Ingrese el nombre del articulo \n");
+        printf("Ingrese el nombre del artículo \n");
         getline(cin, Pro[i].nombre);
-        printf("Ingrese el a%co de lanzamiento del articulo \n", 164);
-        scanf_s("%d", &Pro[i].year);
+        printf("Ingrese el año de lanzamiento del artículo \n");
+        scanf_s("%d", &fe);
+        while (fecha(fe)) {
+            printf("\nLa fecha no es válida\n");
+            printf("\nIngrese el año de lanzamiento del artículo \n");
+            scanf_s("%d", &fe);
+        }
+        Pro[i].year = fe;
         cin.ignore();
-        printf("Ingrese la descripcion del articulo \n");
+        printf("Ingrese la descripción del artículo \n");
         getline(cin, Pro[i].desc);
-        printf("Ingrese las caracteristicas del articulo \n");
+        printf("Ingrese las características del artículo \n");
         getline(cin, Pro[i].carat);
-        printf("Ingrese el genero \n");
+        printf("Ingrese el género \n");
         getline(cin, Pro[i].gen);
-        printf("Ingrese la clasificacion del articulo \n");
+        printf("Ingrese la clasificación del artículo \n");
         getline(cin, Pro[i].clas);
         printf("Ingrese la consola \n");
         getline(cin, Pro[i].con);
-        printf("Ingrese el precio del articulo \n");
+        printf("Ingrese el precio del artículo \n");
         scanf_s("%f", &Pro[i].precio);
 
         Pro[i].imp = Pro[i].precio * 0.16;
         Pro[i].coniva = Pro[i].precio + Pro[i].imp;
     }
+    w = 1;
+    printf("\nRegistro exitoso\n\nRegresando al menú\n");
 }
 
 bool Repetido(int nump, int i) {
@@ -126,31 +172,41 @@ bool Repetido(int nump, int i) {
     return false;
 }
 
+bool fecha(int fe) {
+    if (fe < 1990 || fe>2024) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 
 void listas()
 {
-    int o1, o2;
-    printf("%cDesea filtrar los articulos? 1.Si 2.No \n",168);
+    int o1, o2,s=0;
+    printf("\n¿Desea filtrar los artículos? 1.Si 2.No \n");
     scanf_s("%d", &o1);
     while (o1 != 1 && o1 != 2) {
-        printf("Opcion invalida \nIngrese una opcion valida\n");
-        printf("Desea filtrar los articulos? 1.Si 2.No \n");
+        printf("Opción inválida \nIngrese una opción válida\n");
+        printf("\n¿Desea filtrar los artículos? 1.Si 2.No \n");
         scanf_s("%d", &o1);
     }
 
     if (o1 == 1) {
-        printf("%cQue categoria desea filtrar? \n1.Clasificacion 2.Genero 3.Consola\n",168);
+        printf("\n¿Qué categoría desea filtrar? \n\n1.Clasificación 2.Género 3.Consola\n");
         scanf_s("%d", &o2);
         int r;
         string tubatu;
         switch (o2) {
         case 1:
             cin.ignore();//Necesario para el uso de string.
-            printf("Ingrese la clasificacion que desea visualizar \n");
+            printf("\nIngrese la clasificación que desea visualizar \n");
             getline(cin, tubatu);
             for (int i = 0; i < alta; i++) {
                 r = tubatu.compare(Pro[i].clas);
                 if (r == 0) {
+                    s = 1;
                     int k;
                     k = i + 1;
                     if (Pro[i].status == "ELIMINADO")
@@ -160,13 +216,13 @@ void listas()
                     else
                     {
                         printf("\nRegistro %d \n", k);
-                        printf("Numero de item: %d \n", Pro[i].numero);
-                        printf("Nombre del articulo: %s \n", Pro[i].nombre.c_str());
-                        printf("A%co de lanzamiento del item: %d \n", 164, Pro[i].year);
-                        printf("Descripcion del articulo: %s \n", Pro[i].desc.c_str());
-                        printf("Caracteristicas del articulo: %s \n", Pro[i].carat.c_str());
-                        printf("Genero: %s \n", Pro[i].gen.c_str());
-                        printf("Clasificacion: %s \n", Pro[i].clas.c_str());
+                        printf("Número de ítem: %d \n", Pro[i].numero);
+                        printf("Nombre del artículo: %s \n", Pro[i].nombre.c_str());
+                        printf("Año de lanzamiento del item: %d \n", Pro[i].year);
+                        printf("Descripción del artículo: %s \n", Pro[i].desc.c_str());
+                        printf("Características del artículo: %s \n", Pro[i].carat.c_str());
+                        printf("Género: %s \n", Pro[i].gen.c_str());
+                        printf("Clasificación: %s \n", Pro[i].clas.c_str());
                         printf("Consola: %s \n", Pro[i].con.c_str());
                         printf("Precio: %f \n", Pro[i].precio);
                         printf("Impuesto: %f \n", Pro[i].imp);
@@ -174,14 +230,18 @@ void listas()
                     }
                 }
             }
+            if (s == 0) {
+                printf("\nNo hay artículos registrados de esa clasificación\n\nRegresando al menú\n");
+            }
             break;
             case 2:
                 cin.ignore();//Necesario para el uso de string.
-                printf("Ingrese el genero que desea visualizar \n");
+                printf("\nIngrese el género que desea visualizar \n");
                 getline(cin, tubatu);
                 for (int i = 0; i < alta; i++) {
                     r= tubatu.compare(Pro[i].gen);
                     if (r == 0) {
+                        s = 1;
                         int k;
                         k = i + 1;
                         if (Pro[i].status == "ELIMINADO")
@@ -191,13 +251,13 @@ void listas()
                         else
                         {
                             printf("\nRegistro %d \n", k);
-                            printf("Numero de item: %d \n", Pro[i].numero);
-                            printf("Nombre del articulo: %s \n", Pro[i].nombre.c_str());
-                            printf("A%co de lanzamiento del item: %d \n", 164, Pro[i].year);
-                            printf("Descripcion del articulo: %s \n", Pro[i].desc.c_str());
-                            printf("Caracteristicas del articulo: %s \n", Pro[i].carat.c_str());
-                            printf("Genero: %s \n", Pro[i].gen.c_str());
-                            printf("Clasificacion: %s \n", Pro[i].clas.c_str());
+                            printf("Número de ítem: %d \n", Pro[i].numero);
+                            printf("Nombre del artículo: %s \n", Pro[i].nombre.c_str());
+                            printf("Año de lanzamiento del ítem: %d \n", Pro[i].year);
+                            printf("Descripción del artículo: %s \n", Pro[i].desc.c_str());
+                            printf("Características del artículo: %s \n", Pro[i].carat.c_str());
+                            printf("Género: %s \n", Pro[i].gen.c_str());
+                            printf("Clasificación: %s \n", Pro[i].clas.c_str());
                             printf("Consola: %s \n", Pro[i].con.c_str());
                             printf("Precio: %f \n", Pro[i].precio);
                             printf("Impuesto: %f \n", Pro[i].imp);
@@ -205,14 +265,18 @@ void listas()
                         }
                     }
                 }
+                if (s == 0) {
+                    printf("\nNo hay artículos registrados de ese género\n\nRegresando al menú\n");
+                }
             break;
             case 3:
             cin.ignore();//Necesario para el uso de string.
-            printf("Ingrese la consola que desea visualizar \n");
+            printf("\nIngrese la consola que desea visualizar \n");
             getline(cin, tubatu);
             for (int i = 0; i < alta; i++) {
                 r = tubatu.compare(Pro[i].con);
                 if (r == 0) {
+                    s = 1;
                     int k;
                     k = i + 1;
                     if (Pro[i].status == "ELIMINADO")
@@ -222,13 +286,13 @@ void listas()
                     else
                     {
                         printf("\nRegistro %d \n", k);
-                        printf("Numero de item: %d \n", Pro[i].numero);
-                        printf("Nombre del articulo: %s \n", Pro[i].nombre.c_str());
-                        printf("A%co de lanzamiento del item: %d \n", 164, Pro[i].year);
-                        printf("Descripcion del articulo: %s \n", Pro[i].desc.c_str());
-                        printf("Caracteristicas del articulo: %s \n", Pro[i].carat.c_str());
-                        printf("Genero: %s \n", Pro[i].gen.c_str());
-                        printf("Clasificacion: %s \n", Pro[i].clas.c_str());
+                        printf("Número de ítem: %d \n", Pro[i].numero);
+                        printf("Nombre del artículo: %s \n", Pro[i].nombre.c_str());
+                        printf("Año de lanzamiento del ítem: %d \n", Pro[i].year);
+                        printf("Descripción del artículo: %s \n", Pro[i].desc.c_str());
+                        printf("Características del artículo: %s \n", Pro[i].carat.c_str());
+                        printf("Género: %s \n", Pro[i].gen.c_str());
+                        printf("Clasificación: %s \n", Pro[i].clas.c_str());
                         printf("Consola: %s \n", Pro[i].con.c_str());
                         printf("Precio: %f \n", Pro[i].precio);
                         printf("Impuesto: %f \n", Pro[i].imp);
@@ -236,9 +300,13 @@ void listas()
                     }
                 }
             }
+            if (s == 0) {
+                printf("\nNo hay artículos registrados de esa consola\n\nRegresando al menú\n");
+            }
             break;
             default:
-                printf("Opcion invalida \n");
+                printf("\nOpción inválida \n");
+                return listas();
                 break;
         }
     }
@@ -255,13 +323,13 @@ void listas()
             else
             {
                 printf("\nRegistro %d \n", k);
-                printf("Numero de item: %d \n", Pro[i].numero);
-                printf("Nombre del articulo: %s \n", Pro[i].nombre.c_str());
-                printf("A%co de lanzamiento del item: %d \n", 164, Pro[i].year);
-                printf("Descripcion del articulo: %s \n", Pro[i].desc.c_str());
-                printf("Caracteristicas del articulo: %s \n", Pro[i].carat.c_str());
-                printf("Genero: %s \n", Pro[i].gen.c_str());
-                printf("Clasificacion: %s \n", Pro[i].clas.c_str());
+                printf("Número de ítem: %d \n", Pro[i].numero);
+                printf("Nombre del artículo: %s \n", Pro[i].nombre.c_str());
+                printf("Año de lanzamiento del ítem: %d \n", Pro[i].year);
+                printf("Descripción del artículo: %s \n", Pro[i].desc.c_str());
+                printf("Características del artículo: %s \n", Pro[i].carat.c_str());
+                printf("Género: %s \n", Pro[i].gen.c_str());
+                printf("Clasificación: %s \n", Pro[i].clas.c_str());
                 printf("Consola: %s \n", Pro[i].con.c_str());
                 printf("Precio: %f \n", Pro[i].precio);
                 printf("Impuesto: %f \n", Pro[i].imp);
@@ -274,24 +342,37 @@ void listas()
 void eliminar()
 {
     int j;
-    printf("Ingrese el  registro a eliminar \n");
+    printf("\nIngrese el registro a eliminar \n");
     scanf_s("%d", &j);
+    while (j > alta || j <= 0) {
+        printf("\nOpción inválida\n");
+        printf("\nIngrese un numero de registro válido\n");
+        printf("\nIngrese el registro a eliminar:\n");
+        scanf_s("%d", &j);
+    }
     j = j - 1;
     for (int i = j; i == j; i++)
     {
-        printf("Eliminando registro %d \n", j + 1);
+        printf("\nEliminando registro %d \n", j + 1);
         Pro[i].status = "ELIMINADO";
+        printf("\nRegistro #%d eliminado correctamente\n\nRegresando al menú\n",j+1);
     }
 }
 
 void modificar()
 {
-    int j, opcion, op2, nump;
+    int j, opcion, op2, nump, fe;
     do
     {
         printf("\nIngrese el numero registro a modificar:\n");
         scanf_s("%d", &j);
-        j = j - 1; // esto debido a que i inicia en 0
+        while (j > alta || j<=0) {
+            printf("\nOpción inválida\n");
+            printf("\nIngrese un número de registro válido\n");
+            printf("\nIngrese el número registro a modificar:\n");
+            scanf_s("%d", &j);
+        }
+        j = j - 1;// esto debido a que i inicia en 0
 
         for (int i = j; i == j; i++)
         {
@@ -300,7 +381,7 @@ void modificar()
                 int k;
                 k = i + 1;
                 printf("\nREGISTRO ELIMINADO %d \n", k);
-                printf("Ingrese un registro valido \n");
+                printf("Ingrese un registro válido \n");
                 op2 = 1;
             }
             else
@@ -309,16 +390,16 @@ void modificar()
             }
         }
     } while (op2 == 1);
-    printf("Ingrese que desea modificar:\n");
-    printf("1.-Numero del articulo \n");
-    printf("2.-Nombre del articulo \n");
-    printf("3.-A%co de lanzamiento del articulo \n", 164);
-    printf("4.-Descripcion del articulo \n");
-    printf("5.-Caracteristicas del articulo \n");
-    printf("6.-Genero del articulo  \n");
-    printf("7.-Clasificacion del articulo \n");
-    printf("8.-Consola del articulo \n");
-    printf("9.-Precio del articulo \n");
+    printf("\nIngrese que desea modificar:\n");
+    printf("1.-Número del artículo \n");
+    printf("2.-Nombre del artículo \n");
+    printf("3.-Año de lanzamiento del artículo \n");
+    printf("4.-Descripción del artículo \n");
+    printf("5.-Características del artículo \n");
+    printf("6.-Género del artículo  \n");
+    printf("7.-Clasificación del artículo \n");
+    printf("8.-Consola del artículo \n");
+    printf("9.-Precio del artículo \n");
     scanf_s("%d", &opcion);
 
     switch (opcion)
@@ -326,37 +407,47 @@ void modificar()
     case 1:
         for (int i = j; i == j; i++)
         {
-            printf("\nIngrese el numero de item \n");
+            printf("\nIngrese el numero de ítem \n");
             scanf_s("%d", &nump);
             while (Repetido(nump, i)) {
-                printf("El numero esta repetido\n");
-                printf("\nIngrese el numero de item \n");
+                printf("El número esta repetido\n");
+                printf("\nIngrese el número de item \n");
                 scanf_s("%d", &nump);
             }
             Pro[i].numero = nump;
         }
+        printf("\nModificación exitosa\n\nRegresando al menú\n");
         break;
     case 2:
         for (int i = j; i == j; i++)
         {
             cin.ignore();//Necesario para el uso de string.
-            printf("Ingrese el nombre del articulo \n");
+            printf("\nIngrese el nombre del artículo \n");
             getline(cin, Pro[i].nombre);
+            printf("\nModificación exitosa\n\nRegresando al menú\n");
         }
         break;
     case 3:
         for (int i = j; i == j; i++)
         {
-            printf("Ingrese el a%co de lanzamiento del articulo \n", 164);
-            scanf_s("%d", &Pro[i].year);
+            printf("\nIngrese el año de lanzamiento del artículo \n");
+            scanf_s("%d", &fe);
+            while (fecha(fe)) {
+                printf("\nLa fecha no es válida\n");
+                printf("\nIngrese el año de lanzamiento del artículo \n");
+                scanf_s("%d", &fe);
+            }
+            Pro[i].year = fe;
         }
+        printf("\nModificación exitosa\n\nRegresando al menú\n");
         break;
     case 4:
         for (int i = j; i == j; i++)
         {
             cin.ignore();
-            printf("Ingrese la descripcion del articulo \n");
+            printf("\nIngrese la descripción del artículo \n");
             getline(cin, Pro[i].desc);
+            printf("\nModificación exitosa\n\nRegresando al menú\n");
         }
         break;
 
@@ -364,46 +455,52 @@ void modificar()
         for (int i = j; i == j; i++)
         {
             cin.ignore();
-            printf("Ingrese las caracteristicas del articulo \n");
+            printf("\nIngrese las características del artículo \n");
             getline(cin, Pro[i].carat);
+            printf("\nModificación exitosa\n\nRegresando al menú\n");
         }
         break;
     case 6:
         for (int i = j; i == j; i++)
         {
             cin.ignore();
-            printf("Ingrese el genero \n");
+            printf("\nIngrese el género \n");
             getline(cin, Pro[i].gen);
+            printf("\nModificación exitosa\n\nRegresando al menú\n");
         }
         break;
     case 7:
         for (int i = j; i == j; i++)
         {
             cin.ignore();
-            printf("Ingrese la clasificacion del articulo \n");
+            printf("\nIngrese la clasificación del artículo \n");
             getline(cin, Pro[i].clas);
+            printf("\nModificación exitosa\n\nRegresando al menú\n");
         }
         break;
     case 8:
         for (int i = j; i == j; i++)
         {
             cin.ignore();
-            printf("Ingrese la consola \n");
+            printf("\nIngrese la consola \n");
             getline(cin, Pro[i].con);
+            printf("\nModificación exitosa\n\nRegresando al menú\n");
         }
         break;
     case 9:
         for (int i = j; i == j; i++)
         {
-            printf("Ingrese el precio del articulo \n");
+            printf("\nIngrese el precio del articulo \n");
             scanf_s("%f", &Pro[i].precio);
 
             Pro[i].imp = Pro[i].precio * 0.16;
             Pro[i].coniva = Pro[i].precio + Pro[i].imp;
         }
+        printf("\nModificación exitosa\n\nRegresando al menú\n");
         break;
     default:
-        printf("Opcion invalida \n");
+        printf("\nOpción inválida \n");
+        return modificar();
         break;
     }
 } 
@@ -415,7 +512,7 @@ void archivos()
     int texto;
     string texto2;
 
-    nombrearchivo = "aerithgames_systems.txt";
+    nombrearchivo = "aerithgaming_systems.txt";
 
     archivo.open(nombrearchivo.c_str(), ios::out);
 
@@ -425,7 +522,7 @@ void archivos()
         exit(1);
     }
 
-    archivo << "\t" << "ÆRITH GAMES Systems" << "\n";
+    archivo << "\t" << "ÆRITH GAMING Systems" << "\n";
     /*archivo << "NUMERO" << "\t" << "\t";
     archivo << "NOMBRE" << "\t" << "\t";
     archivo << "AÑO" << "\t" << "\t";
@@ -444,12 +541,12 @@ void archivos()
         {
             texto2 = "REGISTRO ELIMINADO ";
             texto = i+1;
-            archivo << texto2 << texto << "\n";
+            archivo << texto2 << texto << "\n" << "\n";
         }
         else
         {
             texto = Pro[i].numero;
-            archivo <<"\n"<< "NUMERO:" << texto << "\n";
+            archivo <<"\n"<< "NÚMERO:" << texto << "\n";
             texto2 = Pro[i].nombre;
             archivo << "NOMBRE: " << texto2 << "\n";
             texto = Pro[i].year;
@@ -459,7 +556,7 @@ void archivos()
             texto2 = Pro[i].carat;
             archivo << "CARACTERÍSTICAS: "<< texto2 << "\n";
             texto2 = Pro[i].gen;
-            archivo << "GENERO: "<< texto2 << "\n";
+            archivo << "GÉNERO: "<< texto2 << "\n";
             texto2 = Pro[i].clas;
             archivo << "CLASIFICACIÓN: "<< texto2 << "\n";
             texto2 = Pro[i].con;
@@ -469,7 +566,7 @@ void archivos()
             texto = Pro[i].imp;
             archivo << "IMPUESTO: "<< texto << "\n";
             texto = Pro[i].coniva;
-            archivo << "TOTAL: "<< texto << "\n";
+            archivo << "TOTAL: "<< texto << "\n" << "\n";
         }
     }
 
